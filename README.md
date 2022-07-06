@@ -9,7 +9,7 @@ Projeto backend de uma API REST para Revenda de Carros. Este projeto é utilizad
 
 Algumas das principais tecnologias utilizadas neste projeto:
 
-1. Java 11;
+1. Java 17;
 2. Spring Boot 2.7.1;
 3. Spring Data JPA com Hibernate;
 4. Bean Validation;
