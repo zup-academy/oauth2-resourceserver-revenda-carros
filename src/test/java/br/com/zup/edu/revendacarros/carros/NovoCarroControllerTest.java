@@ -100,6 +100,35 @@ class NovoCarroControllerTest {
         assertEquals(1, repository.count(), "total de carros");
     }
 
+    @Test
+    @DisplayName("nao deve cadastrar novo carro quando token não enviado")
+    public void t4() throws Exception {
+        // cenário
+        NovoCarroRequest novoCarro = new NovoCarroRequest("Palio 2001", "HPK2045");
+
+        // ação
+        mockMvc.perform(post("/api/carros")
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(novoCarro)))
+                .andExpect(status().isUnauthorized())
+        ;
+    }
+
+    @Test
+    @DisplayName("nao deve cadastrar novo carro quando token nao possuir scope apropriado")
+    public void t5() throws Exception {
+        // cenário
+        NovoCarroRequest novoCarro = new NovoCarroRequest("Palio 2001", "HPK2045");
+
+        // ação
+        mockMvc.perform(post("/api/carros")
+                        .contentType(APPLICATION_JSON)
+                        .content(toJson(novoCarro))
+                        .with(jwt()))
+                .andExpect(status().isForbidden())
+        ;
+    }
+
     private String toJson(NovoCarroRequest payload) throws JsonProcessingException {
         return mapper.writeValueAsString(payload);
     }

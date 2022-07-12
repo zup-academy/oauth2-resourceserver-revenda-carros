@@ -68,4 +68,42 @@ class ListaCarrosControllerTest {
         ;
     }
 
+    @Test
+    @DisplayName("nao deve listar todos os carros cadastrados quando token nao enviado")
+    public void t2() throws Exception {
+        // cenário
+        List.of(
+                new Carro("Gol 1998", "HPK2045"),
+                new Carro("Palio 2001", "ABC0987"),
+                new Carro("HB20 2018", "XYZ5432")
+        ).forEach(carro -> {
+            repository.save(carro);
+        });
+
+        // ação e validação
+        mockMvc.perform(get("/api/carros")
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+        ;
+    }
+
+    @Test
+    @DisplayName("nao deve listar todos os carros cadastrados quando token nao possui scope apropriado")
+    public void t3() throws Exception {
+        // cenário
+        List.of(
+                new Carro("Gol 1998", "HPK2045"),
+                new Carro("Palio 2001", "ABC0987"),
+                new Carro("HB20 2018", "XYZ5432")
+        ).forEach(carro -> {
+            repository.save(carro);
+        });
+
+        // ação e validação
+        mockMvc.perform(get("/api/carros")
+                        .contentType(APPLICATION_JSON)
+                        .with(jwt()))
+                .andExpect(status().isForbidden())
+        ;
+    }
 }
