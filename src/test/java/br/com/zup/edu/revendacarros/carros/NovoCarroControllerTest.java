@@ -8,11 +8,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,7 +46,10 @@ class NovoCarroControllerTest {
         // ação
         mockMvc.perform(post("/api/carros")
                             .contentType(APPLICATION_JSON)
-                            .content(toJson(novoCarro)))
+                            .content(toJson(novoCarro))
+                                .with(jwt()
+                                    .authorities(new SimpleGrantedAuthority("SCOPE_carros:write"))
+                            ))
                 .andExpect(status().isCreated())
                 .andExpect(redirectedUrlPattern("**/api/carros/*"))
         ;
@@ -62,7 +67,10 @@ class NovoCarroControllerTest {
         // ação
         mockMvc.perform(post("/api/carros")
                         .contentType(APPLICATION_JSON)
-                        .content(toJson(novoCarro)))
+                        .content(toJson(novoCarro))
+                        .with(jwt()
+                                .authorities(new SimpleGrantedAuthority("SCOPE_carros:write"))
+                        ))
                 .andExpect(status().isBadRequest())
         ;
 
@@ -80,7 +88,10 @@ class NovoCarroControllerTest {
         // ação
         mockMvc.perform(post("/api/carros")
                         .contentType(APPLICATION_JSON)
-                        .content(toJson(novoCarro)))
+                        .content(toJson(novoCarro))
+                        .with(jwt()
+                                .authorities(new SimpleGrantedAuthority("SCOPE_carros:write"))
+                        ))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(status().reason("carro com placa 'HPK2045' já existente"))
         ;
