@@ -44,3 +44,30 @@ spring:
         jwt:
           issuer-uri: http://localhost:18080/realms/revenda-carros
           jwk-set-uri: http://localhost:18080/realms/revenda-carros/protocol/openid-connect/certs
+      ##
+      # Spring Security - OAuth2 Client
+      ##
+      client:
+        registration:
+          detran-status-veiculos:
+            authorization-grant-type: client_credentials
+            client-id: detran-status-veiculos-client
+            client-secret: LJ30c8ZrpfNuAeWs4Lrf5huysVC0AWnD
+            scope: detran:read
+        provider:
+          detran-status-veiculos:
+            token-uri: http://localhost:18080/realms/detran/protocol/openid-connect/token
+
+##
+# OpenFeign
+##
+feign:
+  client:
+    config:
+      detranClient:
+        loggerLevel: full
+
+logging:
+  level:
+    org.springframework.web.client: DEBUG
+    br.com.zup.edu.revendacarros.carros.integrations.DetranClient: DEBUG

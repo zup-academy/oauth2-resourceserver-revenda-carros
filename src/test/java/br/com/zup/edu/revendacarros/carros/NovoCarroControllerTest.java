@@ -1,18 +1,26 @@
 package br.com.zup.edu.revendacarros.carros;
 
+import br.com.zup.edu.revendacarros.carros.integrations.DetranClient;
+import br.com.zup.edu.revendacarros.carros.integrations.StatusDoVeiculoResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
+
+import static java.time.LocalDateTime.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -32,9 +40,14 @@ class NovoCarroControllerTest {
     @Autowired
     private CarroRepository repository;
 
+    @MockBean
+    private DetranClient detranClient;
+
     @BeforeEach
     public void setUp() {
         repository.deleteAll();
+        when(detranClient.getStatusDoVeiculo(anyString()))
+                .thenReturn(new StatusDoVeiculoResponse("SEM_RESTRICOES", now()));
     }
 
     @Test
